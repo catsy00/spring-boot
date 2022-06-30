@@ -1,5 +1,6 @@
 FROM default-route-openshift-image-registry.apps.ocd1.shinhan.local/openshift/ubi8-openjdk-11-runtime:1.10
 
-COPY ./spring-boot-hello-1.0.jar .
+COPY spring-boot-hello-1.0.jar .
 
+CMD ls
 CMD java -jar spring-boot-hello-1.0.jar
