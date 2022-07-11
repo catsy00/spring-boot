@@ -1,0 +1,123 @@
+@charset 'utf-8';
+
+/*****************************************************************
+* filename : fonts.css
+* description : icon / 폰트
+* date : 2022-01
+*****************************************************************/
+
+/*****************************************************************
+icon_style
+*****************************************************************/
+@import url( '../icon_fonts/fontawesome/font-awesome.css');
+@import url( '../icon_fonts/themify/themify-icons.css');
+
+/*****************************************************************
+font import
+*****************************************************************/
+/* 고딕계열 */
+@import url( '../fonts/NotoSansKr/NotoSansKR.css'); /*NotoSansKR 100/300/400/500/700/900 */
+
+/* 포인트 */
+@import url( '../fonts/GmarketSans/GmarketSans.css'); /*GmarketSans 300/500/700*/
+
+
+/*****************************************************************
+font-family
+*****************************************************************/
+/* 고딕계열 */
+.f-f-noto { font-family: 'NotoSansKR'; } /* NotoSansKR 100/300/400/500/700/900 */
+
+/* 한글 포인트 */
+.f-f-gs { font-family: 'GmarketSans'; } /* GmarketSans 300/500/700 */
+
+
+/*****************************************************************
+font-size
+*****************************************************************/
+
+.f-s-8 { font-size:8px !important; } 
+.f-s-9 { font-size:9px !important; } 
+.f-s-10 { font-size:10px !important; } 
+.f-s-11 { font-size:11px !important; } 
+.f-s-12 { font-size:12px !important; } 
+.f-s-13 { font-size:13px !important; } 
+.f-s-14 { font-size:14px !important; } 
+.f-s-15 { font-size:15px !important; } 
+.f-s-16 { font-size:16px !important; } 
+.f-s-17 { font-size:17px !important; } 
+.f-s-18 { font-size:18px !important; } 
+.f-s-19 { font-size:19px !important; } 
+.f-s-20 { font-size:20px !important; } 
+.f-s-21 { font-size:21px !important; } 
+.f-s-22 { font-size:22px !important; } 
+.f-s-23 { font-size:23px !important; } 
+.f-s-24 { font-size:24px !important; } 
+.f-s-25 { font-size:25px !important; } 
+.f-s-26 { font-size:26px !important; } 
+.f-s-27 { font-size:27px !important; } 
+.f-s-28 { font-size:28px !important; } 
+.f-s-29 { font-size:29px !important; } 
+.f-s-30 { font-size:30px !important; } 
+.f-s-31 { font-size:31px !important; } 
+.f-s-32 { font-size:32px !important; } 
+.f-s-33 { font-size:33px !important; } 
+.f-s-34 { font-size:34px !important; } 
+.f-s-35 { font-size:35px !important; } 
+.f-s-36 { font-size:36px !important; } 
+.f-s-37 { font-size:37px !important; } 
+.f-s-38 { font-size:38px !important; } 
+.f-s-39 { font-size:39px !important; } 
+.f-s-40 { font-size:40px !important; } 
+.f-s-41 { font-size:41px !important; } 
+.f-s-42 { font-size:42px !important; } 
+.f-s-43 { font-size:43px !important; } 
+.f-s-44 { font-size:44px !important; } 
+.f-s-45 { font-size:45px !important; } 
+.f-s-46 { font-size:46px !important; } 
+.f-s-47 { font-size:47px !important; } 
+.f-s-48 { font-size:48px !important; } 
+.f-s-49 { font-size:49px !important; } 
+.f-s-50 { font-size:50px !important; } 
+.f-s-51 { font-size:51px !important; } 
+.f-s-52 { font-size:52px !important; } 
+.f-s-53 { font-size:53px !important; } 
+.f-s-54 { font-size:54px !important; } 
+.f-s-55 { font-size:55px !important; } 
+.f-s-56 { font-size:56px !important; } 
+.f-s-57 { font-size:57px !important; } 
+.f-s-58 { font-size:58px !important; } 
+.f-s-59 { font-size:59px !important; } 
+.f-s-60 { font-size:60px !important; } 
+
+/*****************************************************************
+font-weight
+*****************************************************************/
+.f-w-100 { font-weight:100 !important; } 
+.f-w-200 { font-weight:200 !important; } 
+.f-w-300 { font-weight:300 !important; } 
+.f-w-400 { font-weight:400 !important; } 
+.f-w-500 { font-weight:500 !important; } 
+.f-w-600 { font-weight:600 !important; } 
+.f-w-700 { font-weight:700 !important; } 
+.f-w-800 { font-weight:800 !important; } 
+.f-w-900 { font-weight:900 !important; } 
+
+.font-w-n, .fwn { font-weight:normal !important; } 
+.font-w-b, .fwb { font-weight:500 !important; } 
+
+/*****************************************************************
+font color
+*****************************************************************/
+.f-c-point { color:rgba(35, 86, 255, 0.8) !important; }  /*사이트 포인트 컬러 설정*/
+.f-c-white { color:#ffffff; } 
+.f-c-blue { color:#18aaff !important; } 
+.f-c-red { color:#222222 !important; } 
+.f-c-orange { color:#ff8f26 !important; } 
+.f-c-green { color:#222222 !important; } 
+.f-c-yellow { color:#ffe818 !important; } 
+.f-c-222 { color:#222222 !important; } 
+.f-c-333 { color:#333333 !important; } 
+.f-c-555 { color:#555555 !important; } 
+.f-c-666 { color:#666666 !important; } 
+.f-c-777 { color:#777777 !important; } 

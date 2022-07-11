@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+
+    <select id="selectByEmail" resultType="com.kepco.user.domain.UserVO">
+        <![CDATA[
+          SELECT
+              EMAIL,
+              USER_NM
+          FROM
+              USER
+          WHERE
+              EMAIL = #{email}       
+      ]]>
+    </select>
+    
+    <select id="selectById" resultType="com.kepco.user.domain.UserVO">
+        <![CDATA[
+          SELECT
+              USER_ID,
+              PASSWORD,
+              USER_NM
+          FROM
+              USER
+          WHERE
+              USER_ID = #{id}       
+      ]]>
+     </select> 
+     
+    <select id="idChk" resultType="int">
+        
+          SELECT
+              COUNT(*)
+          FROM
+              USER
+          WHERE
+              USER_ID = #{id} 
+    </select>
+
+    <select id="selectPacility">
+    	SELECT COUNT(*)
+			FROM PACILITY
+			WHERE 1=1
+			AND hdqr_cd = '7814' 
+			AND fcl_cl_cd = '01'
+			AND pss_cd = #{pssCd};
+    </select>
+    
+    <insert id="register">
+        <![CDATA[
+            INSERT INTO USER
+            (
+                USER_ID,
+                USER_NM,
+                PASSWORD,
+                power_bizp_cd,
+                EMAIL,
+                reg_dt
+            )
+            VALUES
+            (
+                #{id},
+                #{name},
+                #{password},
+                #{power_bizp_cd},
+                #{email},
+                SYSDATE()
+            )
+        ]]>
+    </insert>
+ 
+</mapper>

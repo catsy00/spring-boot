@@ -1,0 +1,897 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="facility">
+
+  
+    <!--  설비 총건수 조회 -->
+    <select id="cntTotFacility" resultType="com.kepco.facility.domain.FacilityVO">
+    SELECT ACNT, BCNT, CCNT, DCNT, ECNT
+			FROM 
+			(select count(TA.ID) as ACNT
+				from FACILITY TA
+                where TA.pss_cd = #{pssCd}
+                  and TA.fcl_cl_Cd = '01' -- 통합제어장치
+			) TA,
+			(select count(TA.ID) as BCNT
+				from FACILITY TA
+				 where TA.pss_cd = #{pssCd}
+                  and TA.fcl_cl_Cd = '02' -- 녹화장치
+			) TB,
+			(select count(TA.ID) as CCNT
+				from FACILITY TA
+				 where TA.pss_cd = #{pssCd}
+                  and TA.fcl_cl_Cd = '03' -- 카메라
+			) TC,
+			(select count(TA.ID) as DCNT
+				from FACILITY TA
+				 where TA.pss_cd = #{pssCd}
+                  and TA.fcl_cl_Cd = '04' -- 출입리더기
+			) TD,
+			(select count(TA.ID) as ECNT
+				from FACILITY TA
+				where TA.pss_cd = #{pssCd}
+                  and TA.fcl_cl_Cd = '05' -- 경보주장치
+			) TE;
+    </select>
+     <!--  설비 정상건수 조회 -->
+    <select id="cntFacility"  parameterType="HashMap" resultType="com.kepco.facility.domain.FacilityVO">
+    SELECT 	ACNT, BCNT, CCNT, DCNT, ECNT
+			FROM 
+			(select 	  count(distinct ta.id) as ACNT 
+				from facility_check_01 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and ((cpu_use_qnt <![CDATA[ <= ]]> #{thVal1} 
+                ) and (round((ram_use_qnt/ram_tot_qnt)*100) <![CDATA[ <= ]]> #{thVal1}
+                ) and (round((hdd_use_qnt/hdd_tot_qnt)*100) <![CDATA[ <= ]]> #{thVal1}
+                ))
+			) TA,
+			(select  	count(distinct ta.id) as BCNT 
+				from facility_check_02 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and ((cpu_use_qnt <![CDATA[ <= ]]> #{thVal2}
+                ) and (round((ram_use_qnt/ram_tot_qnt)*100) <![CDATA[ <= ]]> #{thVal2}
+                ) and (round((hdd_use_qnt/hdd_tot_qnt)*100) <![CDATA[ <= ]]> #{thVal2}
+                ) and ((round((hdd_use_qnt2/hdd_tot_qnt2)*100) <![CDATA[ <= ]]> #{thVal2}  or hdd_tot_qnt2 is not null)
+                ) and ((round((hdd_use_qnt3/hdd_tot_qnt3)*100) <![CDATA[ <= ]]> #{thVal2}  or hdd_tot_qnt3 is not null)
+                ))
+			) TB,
+			(select count(distinct ta.id) as CCNT
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (cnn_sts_yn = 0) and (vdo_file_yn = 0)
+			) TC,
+			(select count(distinct ta.id) as DCNT
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and (cnn_sts_yn = 0)
+			) TD,
+			(select count(distinct ta.id) as ECNT
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (cnn_sts_yn = 0)
+			) TE;
+    </select>
+    
+    <!--  설비 전체 에러 정보 조회(날짜입력 없이) -->
+    <select id="checkFacility" parameterType="HashMap" resultType="com.kepco.facility.domain.FacilityCheckVO">
+    SELECT 	  ACHECK, BCHECK, CCHECK, CCHECK2, DCHECK, ECHECK, TA.PSSNM as PSSNM,aCpuUseQnt,aRamUsrQnt,aHddUseQnt,bCpuUseQnt,bRamUsrQnt,bHddUseQnt,bHddUseQnt2,bHddUseQnt3,TC.FCL_NM,TC2.bVdoFileYn,vdoFileCHECK,TC2.vdo_fcl_nm
+			FROM 
+			(select 	  count(distinct ta.id) as ACHECK 
+						, ifnull(round(ta.cpu_use_qnt),0) as aCpuUseQnt
+                    	, ifnull(round((ram_use_qnt/ram_tot_qnt)*100),0) as aRamUsrQnt 
+						, ifnull(round((hdd_use_qnt/hdd_tot_qnt)*100),0) as aHddUseQnt 
+						, TB.PSS_NM as PSSNM
+				from facility_check_01 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and ((cpu_use_qnt > #{thVal1} 
+                ) or (round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1}
+                ) or (round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1}
+                ))
+			) TA,
+			(select  	count(distinct ta.id) as BCHECK 
+					  , ifnull(round(ta.cpu_use_qnt),0) as bCpuUseQnt
+                      , ifnull(round((ram_use_qnt/ram_tot_qnt)*100),0) as bRamUsrQnt 
+					  , ifnull(round((hdd_use_qnt/hdd_tot_qnt)*100),0) as bHddUseQnt 
+					  , ifnull(round((hdd_use_qnt2/hdd_tot_qnt2)*100),0) as bHddUseQnt2 
+					  , ifnull(round((hdd_use_qnt3/hdd_tot_qnt3)*100),0) as bHddUseQnt3 
+					  , TB.PSS_NM as PSSNM
+				from facility_check_02 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and ((cpu_use_qnt > #{thVal2}
+                ) or (round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2}
+                ) or (round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2}
+                ) or (round((hdd_use_qnt2/hdd_tot_qnt2)*100) > #{thVal2}
+                ) or (round((hdd_use_qnt3/hdd_tot_qnt3)*100) > #{thVal2}
+                ))
+			) TB,
+			(select count(distinct ta.id) as CCHECK
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (cnn_sts_yn  != 0 or vdo_file_yn  != 0)
+			) TC1,
+			(select  count(distinct ta.id) as CCHECK2, TB.PSS_NM as PSSNM, tb.FCL_NM
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (cnn_sts_yn  != 0 )
+			) TC,
+			(select count(distinct ta.id) as vdoFileCHECK, TB.PSS_NM as PSSNM, tb.FCL_NM as vdo_fcl_nm, ta.vdo_file_yn as bVdoFileYn
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (vdo_file_yn  != 0)
+			) TC2,
+			(select count(distinct ta.id) as DCHECK, TB.PSS_NM as PSSNM
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and (cnn_sts_yn  != 0)
+			) TD,
+			(select count(distinct ta.id) as ECHECK, TB.PSS_NM as PSSNM
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (cnn_sts_yn  != 0)
+			) TE;
+    </select>
+    <!--  operation_view 모달창 카메라에러 이름 조회(날짜입력없이) -->
+    <select id="checkCamera"  resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				and (cnn_sts_yn  != 0)
+    </select>
+    
+    <!--  operation_view 모달창 카메라에러 이름 조회(날짜입력후) -->
+    <select id="checkDateCamera" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date} 
+				and (cnn_sts_yn  != 0)
+    </select>
+     <!--  operation_view 모달창 카메라에러 녹화 에러 이름 조회(날짜입력후)-->
+    <select id="checkDateCameraVdo" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date} 
+				and (vdo_file_yn  != 0)
+    </select>
+     <!--  operation_view 모달창 출입리더기에러 이름 조회(날짜입력후) -->
+    <select id="checkDateReader" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date} 
+				and (cnn_sts_yn  != 0)
+    </select>
+   <!--  operation_view 모달창 경보주장치 에러 이름 조회(날짜입력후) -->
+    <select id="checkDateAlter" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date} 
+				and (cnn_sts_yn  != 0)
+    </select>
+    
+     <!--  operation_view 모달창 카메라에러 녹화 에러 이름 조회(날짜입력없이)-->
+    <select id="checkCameraVdo" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and (vdo_file_yn  != 0)
+    </select>
+     <!--  operation_view 모달창 출입리더기에러 이름 조회(날짜입력없이) -->
+    <select id="checkReader" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and (cnn_sts_yn  != 0)
+    </select>
+   <!--  operation_view 모달창 경보주장치 에러 이름 조회(날짜입력없이) -->
+    <select id="checkAlter" parameterType="HashMap" resultType="com.kepco.facility.domain.CameraCheckVO">
+    	select  concat(tb.FCL_NM,' ',tb.ins_plce_nm) as FCL_NM
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()
+				and (cnn_sts_yn  != 0)
+    </select>
+    
+    
+     <!--  operation_view 모달창 bar게이지 정보 조회(날짜입력없이) -->
+    <select id="checkBarFacility" parameterType="HashMap" resultType="com.kepco.facility.domain.FacilityBarCheckVO">
+    SELECT 	  ACHECK, BCHECK, CCHECK, DCHECK, ECHECK, TA.PSSNM as PSSNM,aCpuUseQnt,aRamUsrQnt,aHddUseQnt,bCpuUseQnt,bHddUseQnt2,bHddUseQnt3,bRamUsrQnt,bHddUseQnt,bVdoFileYn
+			FROM 
+			(select 	  count(distinct ta.id) as ACHECK 
+						, ifnull(round(ta.cpu_use_qnt),0) as aCpuUseQnt
+                    	, ifnull(round((ram_use_qnt/ram_tot_qnt)*100),0) as aRamUsrQnt 
+						, ifnull(round((hdd_use_qnt/hdd_tot_qnt)*100),0) as aHddUseQnt 
+						, TB.PSS_NM as PSSNM
+				from facility_check_01 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()  
+				
+			) TA,
+			(select  	count(distinct ta.id) as BCHECK 
+					  , ifnull(round(ta.cpu_use_qnt),0) as bCpuUseQnt
+                      , ifnull(round((ram_use_qnt/ram_tot_qnt)*100),0) as bRamUsrQnt 
+					  , ifnull(round((hdd_use_qnt/hdd_tot_qnt)*100),0) as bHddUseQnt 
+					  , ifnull(round((hdd_use_qnt2/hdd_tot_qnt2)*100),0) as bHddUseQnt2 
+					  , ifnull(round((hdd_use_qnt3/hdd_tot_qnt3)*100),0) as bHddUseQnt3 
+					  , TB.PSS_NM as PSSNM
+				from facility_check_02 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+				
+			) TB,
+			(select count(distinct ta.id) as CCHECK, TB.PSS_NM as PSSNM, tb.FCL_NM, ta.vdo_file_yn as bVdoFileYn
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()  
+			) TC,
+			(select count(distinct ta.id) as DCHECK, TB.PSS_NM as PSSNM
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now() 
+			) TD,
+			(select count(distinct ta.id) as ECHECK, TB.PSS_NM as PSSNM
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(now(), INTERVAL 30 MINUTE)  AND  now()  
+			) TE;
+    </select>
+    <!--  operation_view 모달창 bar게이지 정보 조회(날짜입력후) -->    
+    <select id="checkBarDateFacility" parameterType="HashMap" resultType="com.kepco.facility.domain.FacilityBarCheckDateVO">
+	    <![CDATA[
+	    SELECT 	  ACHECK, BCHECK, CCHECK, DCHECK, ECHECK, TA.PSSNM as PSSNM,aCpuUseQnt,aRamUsrQnt,aHddUseQnt,bHddUseQnt2,bHddUseQnt3,bCpuUseQnt,bRamUsrQnt,bHddUseQnt,bVdoFileYn
+			FROM  
+			(select 	  count(distinct ta.id) as ACHECK 
+						, round(ta.cpu_use_qnt) as aCpuUseQnt
+                    	, round((ram_use_qnt/ram_tot_qnt)*100) as aRamUsrQnt 
+						, round((hdd_use_qnt/hdd_tot_qnt)*100) as aHddUseQnt 
+						, TB.PSS_NM as PSSNM
+				from facility_check_01 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+			) TA,
+			(select  	count(distinct ta.id) as BCHECK 
+					  , round(ta.cpu_use_qnt) as bCpuUseQnt
+                      , round((ram_use_qnt/ram_tot_qnt)*100) as bRamUsrQnt 
+					  , round((hdd_use_qnt/hdd_tot_qnt)*100) as bHddUseQnt 
+					  , ifnull(round((hdd_use_qnt2/hdd_tot_qnt2)*100),0) as bHddUseQnt2 
+					  , ifnull(round((hdd_use_qnt3/hdd_tot_qnt3)*100),0) as bHddUseQnt3 					  
+					  , TB.PSS_NM as PSSNM
+				from facility_check_02 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+			) TB,
+			(select count(distinct ta.id) as CCHECK, TB.PSS_NM as PSSNM, tb.FCL_NM, ta.vdo_file_yn as bVdoFileYn
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+			) TC,
+			(select count(distinct ta.id) as DCHECK, TB.PSS_NM as PSSNM
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+			) TD,
+			(select count(distinct ta.id) as ECHECK, TB.PSS_NM as PSSNM
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+			) TE;
+			]]>
+    </select>
+    
+    <!--  설비 전체 에러 정보 조회(날짜입력 후) -->
+    <select id="checkDateFacility" parameterType="HashMap" resultType="com.kepco.facility.domain.FacilityCheckDateVO">
+	    <![CDATA[
+	    SELECT 	  ACHECK, BCHECK, CCHECK, CCHECK2, DCHECK, ECHECK, TA.PSSNM as PSSNM,aCpuUseQnt,aRamUsrQnt,aHddUseQnt,bHddUseQnt2,bHddUseQnt3,bCpuUseQnt,bRamUsrQnt,bHddUseQnt,TC.FCL_NM,TC2.bVdoFileYn,vdoFileCHECK,TC2.vdo_fcl_nm
+			FROM  
+			(select 	  count(distinct ta.id) as ACHECK 
+						, round(ta.cpu_use_qnt) as aCpuUseQnt
+                    	, round((ram_use_qnt/ram_tot_qnt)*100) as aRamUsrQnt 
+						, round((hdd_use_qnt/hdd_tot_qnt)*100) as aHddUseQnt 
+						, TB.PSS_NM as PSSNM
+				from facility_check_01 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and ((cpu_use_qnt > #{thVal1} 
+                ) or (round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1}
+                ) or (round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1}
+                ))
+			) TA,
+			(select  	count(distinct ta.id) as BCHECK 
+					  , round(ta.cpu_use_qnt) as bCpuUseQnt
+                      , round((ram_use_qnt/ram_tot_qnt)*100) as bRamUsrQnt 
+					  , round((hdd_use_qnt/hdd_tot_qnt)*100) as bHddUseQnt 
+					  , ifnull(round((hdd_use_qnt2/hdd_tot_qnt2)*100),0) as bHddUseQnt2 
+					  , ifnull(round((hdd_use_qnt3/hdd_tot_qnt3)*100),0) as bHddUseQnt3 					  
+					  , TB.PSS_NM as PSSNM
+				from facility_check_02 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and ((cpu_use_qnt > #{thVal1} 
+                ) or (round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1}
+                ) or (round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1}
+                ) or (round((hdd_use_qnt2/hdd_tot_qnt2)*100) > #{thVal2}
+                ) or (round((hdd_use_qnt3/hdd_tot_qnt3)*100) > #{thVal2}
+                ))
+			) TB,
+			(select count(distinct ta.id) as CCHECK
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and (cnn_sts_yn  != 0 or vdo_file_yn  != 0)
+			) TC1,
+			(select count(distinct ta.id) as CCHECK2, TB.PSS_NM as PSSNM, tb.FCL_NM, ta.vdo_file_yn as bVdoFileYn
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and (cnn_sts_yn  != 0)
+			) TC,
+			(select count(distinct ta.id) as vdoFileCHECK, TB.PSS_NM as PSSNM, tb.FCL_NM as vdo_fcl_nm, ta.vdo_file_yn as bVdoFileYn
+				from facility_check_03 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and (vdo_file_yn  != 0)
+			) TC2,
+			(select count(distinct ta.id) as DCHECK, TB.PSS_NM as PSSNM
+				from facility_check_04 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and (cnn_sts_yn  != 0)
+			) TD,
+			(select count(distinct ta.id) as ECHECK, TB.PSS_NM as PSSNM
+				from facility_check_05 ta, facility tb
+				where 1=1
+                and ta.id = tb.id
+                and tb.pss_cd= #{pssCd}
+                AND  date_format(ta.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+                , INTERVAL 30 MINUTE)  AND  #{date}
+				and (cnn_sts_yn  != 0)
+			) TE;
+			]]>
+    </select>
+    <!--  엑셀다운로드 본부기준(날짜입력없이) -->
+    <select id="reportFacility1" parameterType="HashMap" resultType="com.kepco.facility.domain.reportFacilityVO">
+    	SELECT TB.chk_Dt, TA.hdqr_nm, TA.pss_nm, TA.FCL_NM,TB.cpu_use_qnt,TB.ram_use_qnt,TB.hdd_use_qnt,TA.power_bizp_nm, TB.status
+    		,TB.statusCheck
+            FROM facility TA, (
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							, case when (round(cpu_use_qnt) > #{thVal1} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+							, case when cpu_use_qnt > 90.0
+										 then 'CPU'
+										 when (ram_use_qnt/ram_tot_qnt)*100 > #{thVal1}
+										 then 'RAM'
+										 when (hdd_use_qnt/hdd_tot_qnt)*100 > #{thVal1}
+										 then 'HDD'
+									  else ''
+						  END statusCheck	  
+						from facility_check_01
+						where 1=1
+					) union
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							,  case when (round(cpu_use_qnt) > #{thVal2} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+							, case when cpu_use_qnt > 90.0
+										 then 'CPU'
+										 when (ram_use_qnt/ram_tot_qnt)*100 > #{thVal2}
+										 then 'RAM'
+										 when (hdd_use_qnt/hdd_tot_qnt)*100 > #{thVal2}
+										 then 'Disk 1'
+										 when (hdd_use_qnt2/hdd_tot_qnt2)*100 > #{thVal2}
+										 then 'Disk 2'
+										 when (hdd_use_qnt3/hdd_tot_qnt3)*100 > #{thVal2}
+										 then 'Disk 3'
+									  else ''
+						  END statusCheck	 
+						from facility_check_02
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+                     , case when cnn_sts_yn = '1'
+										 then '네트워크'
+									  else ''
+						  END statusCheck           
+						from facility_check_03
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+                     , case when cnn_sts_yn = '1'
+										 then '네트워크'
+									  else ''
+						  END statusCheck           
+						from facility_check_04
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+                     , case when cnn_sts_yn = '1'
+										 then '네트워크'
+									  else ''
+						  END statusCheck           
+						from facility_check_05
+						where 1=1
+					) 
+            )TB
+            WHERE 1=1
+            and TA.ID = TB.ID
+            AND TA.hdqr_Cd = #{hdqrCd}
+            AND  date_format(TB.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(${date}
+            , INTERVAL 30 MINUTE)  AND  ${date}
+            ;
+    </select>
+    <!--  엑셀다운로드 본부기준(날짜입력 후) -->
+    <select id="reportFacility1_1" parameterType="HashMap" resultType="com.kepco.facility.domain.reportFacilityVO">
+    	SELECT TB.chk_Dt, TA.hdqr_nm, TA.pss_nm, TA.FCL_NM,TB.cpu_use_qnt,TB.ram_use_qnt,TB.hdd_use_qnt,TA.power_bizp_nm, TB.status
+    		,TB.statusCheck
+            FROM facility TA, (
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							, case when (round(cpu_use_qnt) > #{thVal1} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+							, case when cpu_use_qnt > 90.0
+										 then 'CPU'
+										 when (ram_use_qnt/ram_tot_qnt)*100 > #{thVal1}
+										 then 'RAM'
+										 when (hdd_use_qnt/hdd_tot_qnt)*100 > #{thVal1}
+										 then 'HDD'
+									  else ''
+						  END statusCheck	  	  
+						from facility_check_01
+						where 1=1
+					) union
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							,  case when (round(cpu_use_qnt) > #{thVal2} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+							, case when cpu_use_qnt > 90.0
+										 then 'CPU'
+										 when (ram_use_qnt/ram_tot_qnt)*100 > #{thVal2}
+										 then 'RAM'
+										  when (hdd_use_qnt/hdd_tot_qnt)*100 > #{thVal2}
+										 then 'Disk 1'
+										 when (hdd_use_qnt2/hdd_tot_qnt2)*100 > #{thVal2}
+										 then 'Disk 2'
+										 when (hdd_use_qnt3/hdd_tot_qnt3)*100 > #{thVal2}
+										 then 'Disk 3'
+									  else ''
+						  END statusCheck	 
+						from facility_check_02
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+                     , case when cnn_sts_yn = '1'
+										 then '네트워크'
+									  else ''
+						  END statusCheck           
+						from facility_check_03
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+                     , case when cnn_sts_yn = '1'
+										 then '네트워크'
+									  else ''
+						  END statusCheck           
+						from facility_check_04
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+                     , case when cnn_sts_yn = '1'
+										 then '네트워크'
+									  else ''
+						  END statusCheck           
+						from facility_check_05
+						where 1=1
+					) 
+            )TB
+            WHERE 1=1
+            and TA.ID = TB.ID
+            AND TA.hdqr_Cd = #{hdqrCd}
+            AND  date_format(TB.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+            , INTERVAL 30 MINUTE)  AND  #{date}
+            ;
+            
+    </select>
+    <!--  엑셀다운로드 지사기준(날짜입력없이) -->
+    <select id="reportFacility2" parameterType="HashMap" resultType="com.kepco.facility.domain.reportFacilityVO">
+    	SELECT TB.chk_Dt, TA.hdqr_nm, TA.pss_nm, TA.FCL_NM,TB.cpu_use_qnt,TB.ram_use_qnt,TB.hdd_use_qnt,TA.power_bizp_nm, TB.status
+            FROM facility TA, (
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							, case when (round(cpu_use_qnt) > #{thVal1} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status 
+						from facility_check_01
+						where 1=1
+					) union
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							,  case when (round(cpu_use_qnt) > #{thVal2} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt2/hdd_tot_qnt2)*100) > #{thVal2} 
+                            || round((hdd_use_qnt3/hdd_tot_qnt3)*100) > #{thVal2} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+						from facility_check_02
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_03
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_04
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_05
+						where 1=1
+					) 
+            )TB
+            WHERE 1=1
+            and TA.ID = TB.ID
+            AND TA.hdqr_Cd = #{hdqrCd}
+            AND TA.power_bizp_cd = #{powBizpCd}
+            AND  date_format(TB.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(${date}
+            , INTERVAL 30 MINUTE)  AND  ${date}
+            ;
+            
+    </select>
+    <!--  엑셀다운로드 지사기준(날짜입력후) -->
+    <select id="reportFacility2_1" parameterType="HashMap" resultType="com.kepco.facility.domain.reportFacilityVO">
+    	SELECT TB.chk_Dt, TA.hdqr_nm, TA.pss_nm, TA.FCL_NM,TB.cpu_use_qnt,TB.ram_use_qnt,TB.hdd_use_qnt,TA.power_bizp_nm, TB.status
+            FROM facility TA, (
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							, case when (round(cpu_use_qnt) > #{thVal1} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status 
+						from facility_check_01
+						where 1=1
+					) union
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							,  case when (round(cpu_use_qnt) > #{thVal2} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt2/hdd_tot_qnt2)*100) > #{thVal2} 
+                            || round((hdd_use_qnt3/hdd_tot_qnt3)*100) > #{thVal2} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+						from facility_check_02
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_03
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_04
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_05
+						where 1=1
+					) 
+            )TB
+            WHERE 1=1
+            and TA.ID = TB.ID
+            AND TA.hdqr_Cd = #{hdqrCd}
+            AND TA.power_bizp_cd = #{powBizpCd}
+            AND  date_format(TB.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+            , INTERVAL 30 MINUTE)  AND  #{date}
+            ;
+            
+    </select>
+    <!--  엑셀다운로드 변전소기준(날짜입력없이) -->
+    <select id="reportFacility3" parameterType="HashMap" resultType="com.kepco.facility.domain.reportFacilityVO">
+    	SELECT TB.chk_Dt, TA.hdqr_nm, TA.pss_nm, TA.FCL_NM,TB.cpu_use_qnt,TB.ram_use_qnt,TB.hdd_use_qnt,TA.power_bizp_nm, TB.status
+            FROM facility TA, (
+					(select ID ,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							, case when (round(cpu_use_qnt) > #{thVal1} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status 
+						from facility_check_01
+						where 1=1
+					) union
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							,  case when (round(cpu_use_qnt) > #{thVal2} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt2/hdd_tot_qnt2)*100) > #{thVal2} 
+                            || round((hdd_use_qnt3/hdd_tot_qnt3)*100) > #{thVal2} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+						from facility_check_02
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_03
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt								
+					, case when cnn_sts_yn = '1'		
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_04
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_05
+						where 1=1
+					) 
+            )TB
+            WHERE 1=1
+            and TA.ID = TB.ID
+            AND TA.hdqr_Cd = #{hdqrCd}
+            AND TA.power_bizp_cd = #{powBizpCd}
+            AND TA.pss_cd = #{pssCd}
+            AND  date_format(TB.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(${date}
+            , INTERVAL 30 MINUTE)  AND  ${date}
+            ;
+    </select>
+    <!--  엑셀다운로드 변전소기준(날짜입력 후) -->
+    <select id="reportFacility3_1" parameterType="HashMap" resultType="com.kepco.facility.domain.reportFacilityVO">
+    	SELECT TB.chk_Dt, TA.hdqr_nm, TA.pss_nm, TA.FCL_NM,TB.cpu_use_qnt,TB.ram_use_qnt,TB.hdd_use_qnt,TA.power_bizp_nm, TB.status
+            FROM facility TA, (
+					(select ID ,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							, case when (round(cpu_use_qnt) > #{thVal1} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal1} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal1} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status 
+						from facility_check_01
+						where 1=1
+					) union
+					(select ID,round(cpu_use_qnt) as cpu_use_qnt, round((ram_use_qnt/ram_tot_qnt)*100) as ram_use_qnt, round((hdd_use_qnt/hdd_tot_qnt)*100) as hdd_use_qnt, chk_Dt
+							,  case when (round(cpu_use_qnt) > #{thVal2} 
+                            || round((ram_use_qnt/ram_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt/hdd_tot_qnt)*100) > #{thVal2} 
+                            || round((hdd_use_qnt2/hdd_tot_qnt2)*100) > #{thVal2} 
+                            || round((hdd_use_qnt3/hdd_tot_qnt3)*100) > #{thVal2} 
+                            )
+								 then '비정상' 
+								 else '정상' 
+								 end status
+						from facility_check_02
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_03
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_04
+						where 1=1
+					) union
+					(select ID, 0 as cpu_use_qnt, 0 as ram_use_qnt, 0 as hdd_use_qnt, chk_Dt
+					 , case when cnn_sts_yn = '1'
+								then '비정상'
+                                else '정상'
+                                end status
+						from facility_check_05
+						where 1=1
+					) 
+            )TB
+            WHERE 1=1
+            and TA.ID = TB.ID
+            AND TA.hdqr_Cd = #{hdqrCd}
+            AND TA.power_bizp_cd = #{powBizpCd}
+            AND TA.pss_cd = #{pssCd}
+            AND  date_format(TB.chk_Dt, '%Y-%m-%d %H:%i') between DATE_SUB(#{date}
+            , INTERVAL 30 MINUTE)  AND  #{date}
+            ;
+    </select>
+    
+    <!--  임계치 조회 -->
+    <select id="searchThreshold" resultType="com.kepco.facility.domain.searchThresholdVO">
+	    SELECT fcl_cl_cd,thrs_val
+	      FROM threshold
+		 WHERE  pss_Cd = #{pssCd}
+		   AND strt_dt = (SELECT MAX(strt_dt) FROM threshold WHERE pss_Cd = #{pssCd}
+		   AND pss_Cd = #{pssCd} );
+    </select>
+    
+ 
+</mapper>

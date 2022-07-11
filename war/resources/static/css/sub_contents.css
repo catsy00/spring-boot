@@ -1,0 +1,231 @@
+@charset "utf-8";
+
+/*****************************************************************
+* filename : sub_contents.css
+* description : 서브 컨텐츠 페이지
+* date : 2022-01
+*****************************************************************/
+
+/*****************************************************************
+실시간 장애 감시/권리운용현황 공통
+*****************************************************************/
+.subConTop { min-height: 153px; background-image: url(../images/sub/subConTop_bg.gif); background-repeat: no-repeat; background-position: right bottom; }
+.subConTop h2 { padding:40px 0px 40px 0; font-size: 30px; font-weight: 600; text-align: center; color:#333333; letter-spacing: -2px;}
+
+.subTabBox { height:50px; }
+.subTabBox:after { content: ''; display: block; clear: both;}
+.subTabBox > .left { float: left; width:800px; }
+.subTabBox > .right { float: right; width:400px; text-align: right; }
+
+.subConBox { margin: -1px 0 0 0; padding:45px; border-radius:0 5px 5px 5px; border:1px solid #117df6; background-color: #ffffff; box-shadow: 0 3px 3px #d0e6f5;}
+
+
+/*점검보고서 다운로드 버튼 */
+.btn_report { display:inline-block; height:41px; line-height:41px; padding:0 20px; font-size:14px; font-weight:400; color:#ffffff !important; border:1px solid #238bf5; border-radius:5px; background-color:#238bf5;}
+.btn_report:hover { background-color:#ffffff; color:#238bf5 !important; }
+.btn_report i { display:inline-block; width:14px; height:15px; margin:0 0 0 15px; background-image: url(../images/sub/ico_report.png); background-repeat: no-repeat; background-position: 0 0; }
+.btn_report:hover i {  background-image: url(../images/sub/ico_report_on.png);}
+
+/*****************************************************************
+실시간 장애 감시
+*****************************************************************/
+/*장애상태*/
+.state01 { display:inline-block; width:80px; background-color:#17acfa; color:#ffffff; font-size:13px; border-radius:5px; line-height:28px; text-align:center;}
+.state02 { display:inline-block; width:80px; background-color:#eb5858; color:#ffffff; font-size:13px; border-radius:5px; line-height:28px; text-align:center;}
+.state03 { display:inline-block; width:80px; background-color:#878585; color:#ffffff; font-size:13px; border-radius:5px; line-height:28px; text-align:center;}
+.state01_s { display:inline-block; width:60px; background-color:#17acfa; color:#ffffff; font-size:11px; border-radius:5px; line-height:24px; text-align:center;}
+.state02_s { display:inline-block; width:60px; background-color:#eb5858; color:#ffffff; font-size:11px; border-radius:5px; line-height:24px; text-align:center;}
+.state03_s { display:inline-block; width:60px; background-color:#878585; color:#ffffff; font-size:11px; border-radius:5px; line-height:24px; text-align:center;}
+
+/*장애검색*/
+.realSearch { margin: 0 0 0 40px; }
+.realSearch:after { content: ''; display: block; clear: both;}
+.realSearch .mTit { float:left; line-height: 36px; margin:0 20px 0 0; font-size: 16px; font-weight: 500; color: #117df6; }
+.realSearch .sTit { float:left; margin:0 0 0 10px; line-height: 36px; font-size: 14px; font-weight: 400; color:#333333;}
+.realSearch .btn_search { float:left;  margin:0 0 0 10px; width:36px; height:36px; text-indent: -99999px; background-color:#117df6; border:1px solid #117df6; border-radius: 3px; background-image: url(../images/sub/ico_search.png); background-repeat: no-repeat; background-position: center center; box-sizing: border-box;}
+.realSearch .btn_search:hover { background-color:#ffffff; background-image: url(../images/sub/ico_search_on.png);}
+.realSearch .dateSelect { float:left; height: 36px; width:140px; line-height: 36px; font-family: 'GmarketSans'; font-weight: 500; border:1px solid #e4e4e4; border-radius: 3px; padding: 0 10px 0 10px; background-image: url(../images/sub/ico_date.png); background-repeat: no-repeat; background-position: right center; box-sizing: border-box;}
+.realSearch .dateSelect2 { float:left; height: 36px; width:175px; line-height: 38px; font-family: 'GmarketSans'; font-weight: 500; border:1px solid #e4e4e4; border-radius: 3px; padding: 0 10px 0 10px; background-image: url(../images/sub/ico_date.png); background-repeat: no-repeat; background-position: right center; box-sizing: border-box;}
+.realSearch .txt_date { float:left; padding:0 15px; font-size: 16px; font-weight: 400; color:#333333;}
+.realSearch input, .realSearch select { float:left; }
+
+/*장애리스트*/
+.realList { margin:20px 0 0 0; height: 350px;}
+.realList2 { margin:0 0 0 0; height: 350px;  width: 558 px;}
+.realList3 { margin:20px 0 0 0; width: 554 px;}
+.realList .btn_realview { color:#117df6;  text-decoration: underline;}
+
+/*****************************************************************
+권리운용현황
+*****************************************************************/
+.operInfo { text-align:right;}
+.operInfo li {display: inline-block; margin:0 0 0 15px; }
+.operInfo li:first-child { margin:0;}
+.operInfo li i { display: inline-block; width:10px; height:10px; margin:0 10px 0 0; border-radius:10px; }
+.operInfo li .count { background-color:#eb5858; }
+.operInfo li .allcount { background-color:#3ad311;}
+.operInfo li .clearcount { background-color:#3ad311;}
+.operInfo li .disablecount { background-color:#b6b6b6;}
+.operInfo li span { display: inline-block;}
+
+.operListBox { height:670px;  margin:20px 0 0 0; position: relative; }
+.operListBox .bonbu { position: absolute; top:0; left:50%; margin:0 0 0 -123px; z-index: 100;}
+.operListBox .bonbu .outer { display:block; width:246px; height: 123px; background-color: #a9d0fc; border-radius: 0 0 123px 123px;}
+.operListBox .bonbu .in { display:block; width:198px; height: 99px; margin:0 auto; padding:30px 0 0 0; background-color: #117df6; border-radius: 0 0 99px 99px; text-align: center; font-size:24px; font-weight: 400; color:#ffffff; box-sizing: border-box;}
+
+/*위치*/
+.operListBox .jighal { position:absolute; top:0; left:0; }
+.operListBox .song { position:absolute; top:0; left:0; }
+.operListBox .center { position: absolute; top:200px; left:50.5%; margin:0 0 0 -123px; z-index: 100;}
+.operListBox .sun { position:absolute; top:335px; left:175px;}
+.operListBox .gang { position:absolute; top:335px; left:430px;}
+.operListBox .gwang { position:absolute; top:335px; left:680px;}
+.operListBox .mok { position:absolute; top:0; right:0;}
+.operListBox .wang { position:absolute; top:0; right:0;}
+.operListBox .oper_line { position:absolute; top:42px; left:50%; width:788px; height:298px; margin:0 0 0 -394px; background-image: url(../images/sub/oper_line.png); background-repeat: no-repeat;  z-index: 90;}
+.operListBox .oper_line2 { position:absolute; top:42px; left:49%; width:788px; height:298px; margin:0 0 0 -390px; background-image: url(../images/sub/oper_line2.png); background-repeat: no-repeat;  z-index: 90;}
+
+.operListBox .inBox { width:228px; height:335px;}
+.operListBox .inBox h3 { width:100px; height: 100px; margin:0 auto; padding:38px 0 0 0; font-size: 20px; color:#ffffff; font-weight: 400; text-align: center; background-image: url(../images/sub/inBox_h3.png); background-repeat: no-repeat; background-position: 0 0; box-sizing: border-box;}
+.operListBox .inBox h3.on { padding:28px 0 0 0; background-image: url(../images/sub/inBox_h3_on.png);}
+.operListBox .inBox ul { margin:17px 0 0 0;}
+.operListBox .inBox ul li:last-child { margin: 0;}
+.operListBox .inBox ul li { margin:0 0 7px 0; }
+.operListBox .inBox ul li:after { content: ''; display: block; clear: both;}
+.operListBox .inBox ul li .nomalTit { float: left; width:151px; line-height: 38px; padding:0 0 0 54px; font-size:14px; border:1px solid #e4e4e4; background-color: #f7f7f7; border-radius: 30px; background-repeat: no-repeat; background-position: 19px center; box-sizing: border-box;}
+.operListBox .inBox ul li .pointTit { float: left; width:151px; line-height: 38px; padding:0 0 0 54px; font-size:14px; border:1px solid #eb5858; background-color: #ffe6e6; border-radius: 30px; background-repeat: no-repeat; background-position: 19px center; box-sizing: border-box;}
+.operListBox .inBox ul li .ico01 { background-image: url(../images/sub/ico01.gif);}
+.operListBox .inBox ul li .ico02 { background-image: url(../images/sub/ico02.gif);}
+.operListBox .inBox ul li .ico03 { background-image: url(../images/sub/ico03.gif);}
+.operListBox .inBox ul li .ico04 { background-image: url(../images/sub/ico04.gif);}
+.operListBox .inBox ul li .ico05 { background-image: url(../images/sub/ico05.gif);}
+.operListBox .inBox ul li .count { float: left; width:38px; line-height:38px; background-color: #eb5858; font-size:14px; font-family: 'GmarketSans'; font-weight: 500; text-align:center; color:#ffffff; border-radius: 20px;}
+.operListBox .inBox ul li .disablecount { float: left; width:38px; line-height:38px; background-color: #b6b6b6; font-size:14px; font-family: 'GmarketSans'; font-weight: 500; text-align:center; color:#ffffff; border-radius: 20px;}
+.operListBox .inBox ul li .allcount { float: left; width:38px; line-height:38px; background-color: #3ad311; font-size:14px; font-family: 'GmarketSans'; font-weight: 500; text-align:center; color:#ffffff; border-radius: 20px;}
+.operListBox .inBox ul li .clearcount { float: left; width:38px; line-height:38px; background-color: #b6b6b6; font-size:14px; font-family: 'GmarketSans'; font-weight: 500; text-align:center; color:#ffffff; border-radius: 20px;}
+
+
+/*아이콘*/
+.operListBox .inBox ul li .ico01_off,
+.operListBox .inBox ul li .ico02_off,
+.operListBox .inBox ul li .ico03_off,
+.operListBox .inBox ul li .ico04_off,
+.operListBox .inBox ul li .ico05_off
+{ float: left; width:151px; line-height: 38px; padding:0 0 0 54px; font-size:14px; border:1px solid #e4e4e4; background-color: #f7f7f7; border-radius: 30px; background-repeat: no-repeat; background-position: 19px center; box-sizing: border-box;}
+.operListBox .inBox ul li .ico01_on,
+.operListBox .inBox ul li .ico02_on,
+.operListBox .inBox ul li .ico03_on,
+.operListBox .inBox ul li .ico04_on,
+.operListBox .inBox ul li .ico05_on
+{ float: left; width:151px; line-height: 38px; padding:0 0 0 54px; font-size:14px; border:1px solid #eb5858; background-color: #ffe6e6; border-radius: 30px; background-repeat: no-repeat; background-position: 19px center; box-sizing: border-box;}
+
+.operListBox .inBox ul li .ico01_off { background-image: url(../images/sub/ico01_off.gif);}
+.operListBox .inBox ul li .ico02_off { background-image: url(../images/sub/ico02_off.gif);}
+.operListBox .inBox ul li .ico03_off { background-image: url(../images/sub/ico03_off.gif);}
+.operListBox .inBox ul li .ico04_off { background-image: url(../images/sub/ico04_off.gif);}
+.operListBox .inBox ul li .ico05_off { background-image: url(../images/sub/ico05_off.gif);}
+.operListBox .inBox ul li .ico01_on { background-image: url(../images/sub/ico01_on.gif);}
+.operListBox .inBox ul li .ico02_on { background-image: url(../images/sub/ico02_on.gif);}
+.operListBox .inBox ul li .ico03_on { background-image: url(../images/sub/ico03_on.gif);}
+.operListBox .inBox ul li .ico04_on { background-image: url(../images/sub/ico04_on.gif);}
+.operListBox .inBox ul li .ico05_on { background-image: url(../images/sub/ico05_on.gif);}
+
+/*****************************************************************
+권리운용현황 상세
+*****************************************************************/
+.operViewTop{}
+.operViewTop:after { content: ''; display: block; clear: both;}
+.operViewTop > .left { float: left;}
+.operViewTop > .right { float: right;}
+
+.operViewTop > .left .mTit { display: inline-block; line-height: 40px; margin:0 20px 0 0; font-size: 24px; font-weight: 500; color: #117df6; letter-spacing: -2px;}
+.operViewTop > .left .sTit { display: inline-block; line-height: 40px; margin:0 30px 0 0; font-size: 20px; font-weight: 400; color:#333333; letter-spacing: -2px;}
+.operViewTop > .left .operDate{height:36px; width:180px; line-height: px; font-family: 'GmarketSans'; font-weight: 500; border:1px solid #e4e4e4; border-radius: 3px; padding: 0 10px 0 7px; background-image: url(../images/sub/ico_operdate.gif); background-repeat: no-repeat; background-position: right center; box-sizing: border-box;}
+
+.operViewTop > .right .btn_operList { display: inline-block; padding:0 30px; line-height: 40px; font-size: 15px; color:#ffffff; background-color:#117df6; border:1px solid #117df6; border-radius: 3px;}
+.operViewTop > .right .btn_operList:hover { color:#117df6; background-color:#ffffff;}
+
+.operViewCon .conList:after { content: ''; display: block; clear: both;}
+.operViewCon .conList > li { float:left; width:190px; margin:35px 0 0 38px;}
+.operViewCon .conList > li:nth-child(5n+1) { margin:35px 0 0 0;}
+.operViewCon .conList > li .conRepeat { border:1px solid #e4e4e4; border-radius: 3px;}
+.operViewCon .conList > li .conRepeat .tit { padding:0 20px; line-height: 38px; font-size: 15px; font-weight: 400; border-bottom:1px solid #e4e4e4; background-color: #fafafa; background-image: url(../images/sub/ico_repeat_more.png); background-repeat: no-repeat; background-position: 164px center;}
+.operViewCon .conList > li .conRepeat .tit:hover { color:#117df6; background-image: url(../images/sub/ico_repeat_more_on.png);}
+.operViewCon .conList > li .conRepeat .con {padding:10px 0 10px 20px; } 
+.operViewCon .conList > li .conRepeat .con li { margin:10px 0 5px 0;}
+.operViewCon .conList > li .conRepeat .con li:after { content: ''; display: block; clear: both;}
+.operViewCon .conList > li .conRepeat .con li .txt_name { float:left; width:85px;}
+.operViewCon .conList > li .conRepeat .con li .ico_signal { float:left; margin:2px 10px 0 0; width:15px; height:15px; background-color:#3ad311; border-radius: 10px; text-indent: -9999px;}
+.operViewCon .conList > li .conRepeat .con li .ico_signal.on { background-color:#f53d3d; text-indent: -9999px;}
+.operViewCon .conList > li .conRepeat .con li .ico_signal.off { background-color:#b6b6b6; text-indent: -9999px;}
+.operViewCon .conList > li .conRepeat .con li .txt_state { float:left; margin:2px 0 0 0; font-family: 'GmarketSans'; font-weight: 400; letter-spacing: -1px; }
+
+/*****************************************************************
+모달 팝업
+*****************************************************************/
+
+/*모달 스타일*/
+.modal_style .tit { background-color: #117df6; line-height:48px; padding:0 30px; border-radius: 5px 5px 0 0; color:#ffffff; font-size:16px; font-weight: 400;}
+.modal_style .con {background-color: #ffffff; padding:10px 30px 15px 30px; border-radius: 0 0 5px 5px;  }
+
+/*점검보고서 팝업*/
+#reportCon .conTop{ text-align: center;}
+#reportCon .conBottom { margin:10px 0 0 0; }
+#reportCon .conBottom .stit { line-height:35px; font-size: 14px; color:#333333;}
+#reportCon .conBottom .downList { padding:20px 20px 5px 20px; border:1px solid #d1d1d1; border-radius: 5px; background-color: #fafafa; }
+#reportCon .conBottom .downList:after,
+#reportCon .conBottom .downList li:after { content: ''; display: block; clear: both;}
+#reportCon .conBottom .downList li { float:left; width:50%; margin:0 0 15px 0;}
+#reportCon .conBottom .downList li .txt { float:left; line-height:32px; padding:0 0 0 15px;}
+#reportCon .conBottom .downList li .btn_down { float:right; }
+
+.btn_down { display:inline-block; height:32px; line-height:32px; padding:0 10px 0 15px; color:#555555 !important; border:1px solid #d1d1d1; border-radius:5px;  background-color:#ffffff;}
+.btn_down:hover { background-color:#ffffff; color:#238bf5 !important; border:1px solid #238bf5;}
+.btn_down i { display:inline-block; width:14px; height:15px; margin:0 0 0 15px; background-image: url(../images/sub/ico_down.png); background-repeat: no-repeat; background-position: 0 0; }
+.btn_down:hover i {  background-image: url(../images/sub/ico_down_on.png);}
+
+/*장애 상세 팝업*/
+#realView h3{ padding: 0 0 10px 0; font-size: 14px; font-weight: 400;}
+#realView .listScrollBox { height:276px;}
+
+
+/*변전소 운영현황 상세 팝업*/
+.operViewPopSearch { text-align: center; }
+.operViewPopSearch .mTit { display: inline-block; line-height: 30px; margin:0 20px 0 0; font-size: 15px; font-weight: 500; color: #117df6; letter-spacing: -2px;}
+.operViewPopSearch .operPopDate { display: inline-block; width:180px; height: 36px; margin:0 0 0 0; font-family: 'GmarketSans'; font-weight: 500; border:1px solid #e4e4e4; border-radius: 3px; padding: 0 10px 0 10px; background-image: url(../images/sub/ico_operpopdate.gif); background-repeat: no-repeat; background-position: right center; box-sizing: border-box; }
+.operViewPopCon { margin:20px 0 0 0; }
+.operViewPopCon .btn_excel { display: inline-block; line-height:40px; padding:0 16px 0 50px; font-size: 14px; color:#333333; border:1px solid #d1d1d1; border-radius: 3px;  background-image: url(../images/sub/ico_excel.gif); background-repeat: no-repeat; background-position: 16px center;}
+.operViewPopCon .btn_excel:hover { color:#0b9851; border:1px solid #0b9851; }
+
+.operViewPopCon .top { margin:8px 0 0 0; }
+.operViewPopCon .bottom { margin:20px 0 0 0; }
+.operViewPopCon .top:after,
+.operViewPopCon .bottom:after { content: ''; display: block; clear: both;}
+.operViewPopCon .top .control { float:left; width:410px; height:260px;}
+.operViewPopCon .top .recoding { float:left; width:410px; height:260px; margin:0 0 0 20px; }
+.operViewPopCon .bottom .camera { float:left; width:266px;}
+.operViewPopCon .bottom .reder { float:left; width:266px; margin:0 0 0 20px;}
+.operViewPopCon .bottom .alarm { float:left; width:266px; margin:0 0 0 20px;}
+
+/*내부 박스 공통*/
+.operViewPopCon .conBox { border:1px solid #e4e4e4; border-radius: 3px; box-sizing: border-box;}
+.operViewPopCon .conBox h3 { padding:0 20px; line-height: 38px; font-size: 15px; font-weight: 400; border-bottom:1px solid #e4e4e4; background-color: #fafafa;}
+
+.operViewPopCon .conBox .stateBarBox { margin:10px 0 0 0; }
+.operViewPopCon .conBox .stateBarBox:after { content: ''; display: block; clear: both;}
+.operViewPopCon .conBox .stateBarBox .txt_tit { float:left; width:20%; font-size:14px;}
+.operViewPopCon .conBox .stateBarBox .bar { float:left; width:70%; }
+.operViewPopCon .conBox .stateBarBox .txt_per { float:left; width:10%; font-size:14px; text-align: right;}
+.operViewPopCon .conBox .conBoxIn { padding:10px 20px;}
+
+.operViewPopCon .conBox .con { padding:10px 20px; } 
+.operViewPopCon .conBox .con:after { content: ''; display: block; clear: both;}
+.operViewPopCon .conBox .con .txt_name { float:left; width:150px; }
+.operViewPopCon .conBox .con .txt_state { float:right; margin:2px 0 0 0; font-family: 'GmarketSans'; font-weight: 400; letter-spacing: -1px; }
+.operViewPopCon .conBox .con .ico_signal { float:left; margin:2px 10px 0 0; width:15px; height:15px; background-color:#3ad311; border-radius: 10px; text-indent: -9999px;}
+.operViewPopCon .conBox .con .ico_signal.on { background-color:#f53d3d; text-indent: -9999px;}
+.operViewPopCon .conBox .con .ico_signal.off { background-color:#b6b6b6; text-indent: -9999px;}
+.operViewPopCon .conBox .infoTextBox { padding:10px 20px; height:100px;}
+.operViewPopCon .conBox .infoTextBox h4 { font-weight: 400; color:#117df6; border-bottom:1px solid #e4e4e4;}
+.operViewPopCon .conBox .infoTextBox ul li { margin:7px 0 0 0; padding:0 0 5px 20px; font-size:14px; border-bottom:1px dotted #e4e4e4;}
+.operViewPopCon .conBox .infoTextBox ul li:last-child {border-bottom:none;}

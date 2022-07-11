@@ -1,0 +1,873 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="facilityList">
+
+<!-- 01 통합제어장치 전체건수 조회 -->
+	<select id="selectTotCntfacility01" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_01 b
+		   		,facility a
+		  WHERE a.id = b.id
+		     <if test="pssCd != '0000'.toString()">
+				and a.pss_cd = #{pssCd}
+			 </if>
+		      <if test="checkCd != '3'.toString()">
+					    and (case when cpu_use_qnt > #{thrs} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 		          else '0'
+							 end ) = #{checkCd}
+		   	  </if>	 
+		     <if test="startDate != ''.toString()">
+		    	 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		     </if>
+		  ORDER BY b.chk_Dt DESC, (case when cpu_use_qnt > #{thrs} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 		          else '0'
+							 	   end ) DESC
+	</select>
+	
+<!-- 01 통합제어장치 -->
+	<select id="selectfacility01"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cpu_use_qnt as cpu_use_rate
+				 		    ,FORMAT((b.ram_use_qnt/b.ram_tot_qnt) * 100,2) as ram_use_rate
+				 		    ,FORMAT((b.hdd_use_qnt/b.hdd_tot_qnt) * 100,2) as hdd_use_rate
+				 		    ,case when cpu_use_qnt > #{thrs} then '1'
+				 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+				 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+				 		          else '0'
+				 		      end  as check_yn
+				 		    ,a.fcl_cl_Cd as fcl_cl_Cd  
+					  FROM   facility_check_01 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and (case when cpu_use_qnt > #{thrs} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 		          else '0'
+							 end ) = #{checkCd}
+		   			  </if>	
+		   			 <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		 </if>
+					  ORDER BY b.chk_Dt DESC, check_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+
+<!-- 02 녹화장치 전체건수 조회 -->
+	<select id="selectTotCntfacility02" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_02 b
+		   		,facility a
+		  WHERE a.id = b.id
+		  <if test="pssCd != '0000'.toString()">
+				and a.pss_cd = #{pssCd}
+		  </if>
+		   <if test="checkCd != '3'.toString()">
+					    and (case when cpu_use_qnt > #{thrs} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs} then '1'
+							 		          else '0'
+							 end ) = #{checkCd}
+		   </if>	
+		   <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    </if>
+		  ORDER BY b.chk_Dt DESC, (case when cpu_use_qnt > #{thrs} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs} then '1'
+							 		          else '0'
+							 end ) DESC
+	</select>
+	
+<!-- 02 녹화장치 -->
+	<select id="selectfacility02"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cpu_use_qnt as cpu_use_rate
+				 		    ,FORMAT((b.ram_use_qnt/b.ram_tot_qnt) * 100,2) as ram_use_rate
+				 		    ,FORMAT((b.hdd_use_qnt/b.hdd_tot_qnt) * 100,2) as hdd_use_rate
+				 		    ,IFNULL(FORMAT((b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100,2),0) as hdd_use_rate2
+				 		    ,IFNULL(FORMAT((b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100,2),0) as hdd_use_rate3
+				 		    ,case when cpu_use_qnt > #{thrs} then '1'
+				 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+				 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 	  when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs} then '1'
+							 	  when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs} then '1'
+				 		          else '0'
+				 		      end  as check_yn
+				 		    ,a.fcl_cl_Cd as fcl_cl_Cd
+					  FROM   facility_check_02 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and (case when cpu_use_qnt > #{thrs} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 		          when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs} then '1'
+							 	              when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs} then '1'
+							 		          else '0'
+							 end ) = #{checkCd}
+		   			  </if>	
+		   			  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		 </if>
+					  ORDER BY b.chk_Dt DESC, check_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+	
+	<!-- 03 카메라 전체건수 조회 -->
+	<select id="selectTotCntfacility03" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_03 b
+		   		,facility a
+		  WHERE a.id = b.id
+		   <if test="pssCd != '0000'.toString()">
+			 and a.pss_cd = #{pssCd}
+		   </if>
+			<if test="checkCd != '3'.toString()">
+				and b.cnn_sts_yn = #{checkCd}
+		   	</if>	
+ 			<if test="startDate != ''.toString()">
+		    	and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    </if>
+		  ORDER BY b.chk_Dt DESC, b.cnn_sts_yn DESC
+	</select>
+	
+	<!-- 03 카메라 -->
+	<select id="selectfacility03"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cnn_ss as cnn_ss
+				 		    ,b.cnn_sts_yn as check_yn
+				 		    ,a.fcl_cl_Cd as fcl_cl_Cd
+				 		    ,b.vdo_file_yn as vdo_file_yn
+					  FROM   facility_check_03 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and (b.cnn_sts_yn = #{checkCd} or b.vdo_file_yn = #{checkCd})
+		   			  </if>	
+					   <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		 </if>
+					  ORDER BY b.chk_Dt DESC, b.cnn_sts_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+
+<!-- 04 출입리더기 전체건수 조회 -->
+	<select id="selectTotCntfacility04" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_04 b
+		   		,facility a
+		  WHERE a.id = b.id
+		   <if test="pssCd != '0000'.toString()">
+			 and a.pss_cd = #{pssCd}
+		   </if>
+			<if test="checkCd != '3'.toString()">
+				and b.cnn_sts_yn = #{checkCd}
+		   	</if>	
+			<if test="startDate != ''.toString()">
+		    	 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    </if>
+		  ORDER BY b.chk_Dt DESC, b.cnn_sts_yn DESC
+	</select>
+	
+	<!-- 04 출입리더기 -->
+	<select id="selectfacility04"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cnn_ss as cnn_ss
+				 		    ,b.cnn_sts_yn as check_yn
+				 		    ,a.fcl_cl_Cd as fcl_cl_Cd
+					  FROM   facility_check_04 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+					  ORDER BY b.chk_Dt DESC, b.cnn_sts_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+	
+	<!-- 05 경보주장치 전체건수 조회 -->
+	<select id="selectTotCntfacility05" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_05 b
+		   		,facility a
+		  WHERE a.id = b.id
+		   <if test="pssCd != '0000'.toString()">
+			 and a.pss_cd = #{pssCd}
+		   </if>
+			<if test="checkCd != '3'.toString()">
+				and b.cnn_sts_yn = #{checkCd}
+		   	</if>	
+			<if test="startDate != ''.toString()">
+		    	 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    </if>
+		  ORDER BY b.chk_Dt DESC, b.cnn_sts_yn DESC
+	</select>
+	
+	<!-- 05 경보주장치 -->
+	<select id="selectfacility05"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cnn_ss as cnn_ss
+				 		    ,b.cnn_sts_yn as check_yn
+				 		    ,a.fcl_cl_Cd as fcl_cl_Cd
+					  FROM   facility_check_05 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+					  ORDER BY b.chk_Dt DESC, b.cnn_sts_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+	
+	
+	
+		<!-- 00  전체건수 조회 -->
+	<select id="selectTotCntfacility00" resultType="int">
+		SELECT 
+	   		 SUM(cnt) 
+		FROM(
+			(
+				SELECT COUNT(*) as cnt
+			  	  FROM   facility_check_01 b
+				   		,facility a
+				 	WHERE a.id = b.id
+					  <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and (case when cpu_use_qnt > #{thrs01} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs01} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs01} then '1'
+							 		          else '0'
+							 end ) = #{checkCd}
+		   			  </if>	
+		   			 <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		 </if>
+			)
+		union all
+		(
+				SELECT COUNT(*) as cnt
+			  	  FROM   facility_check_02 b
+				   		,facility a
+				 WHERE a.id = b.id
+							 <if test="pssCd != '0000'.toString()">
+							  	and a.pss_cd = #{pssCd}
+							  </if>
+							  <if test="checkCd != '3'.toString()">
+							    and (case when cpu_use_qnt > #{thrs02} then '1'
+									 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs02} then '1'
+									 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+							 	 					  when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs} then '1'
+							 	 					  when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs} then '1'
+									 		          else '0'
+									 end ) = #{checkCd}
+				   			  </if>	
+				   			  <if test="startDate != ''.toString()">
+				    			  and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+				    		 </if>
+		)
+		union all
+		(
+				SELECT COUNT(*) as cnt
+			  	  FROM   facility_check_03 b
+				   		,facility a
+				   WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd} or b.vdo_file_yn= #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+		)
+		union all
+		(
+				SELECT COUNT(*) as cnt
+			  	  FROM   facility_check_04 b
+				   		,facility a
+				   WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+		)
+		union all
+		(
+				SELECT COUNT(*) as cnt
+			  	  FROM   facility_check_05 b
+				   		,facility a
+				    WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+		)
+		) as ss
+			
+	</select>
+	
+	
+	
+	<!-- 00  전체조회-->
+	<select id="selectfacility00"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+				(	 SELECT	 b.id as id
+							,convert(b.chk_Dt,char) as chk_Dt
+							,a.power_bizp_nm as power_bizp_nm
+							,a.pss_cd as pss_cd
+							,a.pss_nm as pss_nm
+							,a.fcl_nm as fd_nm
+							,a.ins_plce_nm as ins_plce_nm
+							,b.cpu_use_qnt as cpu_use_rate
+					        ,FORMAT((b.ram_use_qnt/b.ram_tot_qnt) * 100,2) as ram_use_rate
+							,FORMAT((b.hdd_use_qnt/b.hdd_tot_qnt) * 100,2) as hdd_use_rate
+							,0 as hdd_use_rate2
+							,0 as hdd_use_rate3
+							,0 as vdo_file_yn
+							,b.ram_tot_qnt as ram_tot_qnt
+							,b.hdd_tot_qnt as hdd_tot_qnt
+						 	,case when cpu_use_qnt > #{thrs01} then '1'
+						 		  when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs01}  then '1'
+						 		  when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs01}  then '1'
+						 		  else '0'
+						 	 end  as check_yn
+						 	,'0' as cnn_sts_yn
+		        			,0 as cnn_ss                      
+        					,a.fcl_cl_Cd as fcl_cl_Cd
+					FROM   facility_check_01 b
+						  ,facility a
+					WHERE a.id = b.id
+					  <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and (case when cpu_use_qnt > #{thrs01} then '1'
+							 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs01} then '1'
+							 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs01} then '1'
+							 		          else '0'
+							 end ) = #{checkCd}
+		   			  </if>	
+		   			 <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		 </if>
+
+		)
+		union all
+		(
+						SELECT	 b.id as id
+								,convert(b.chk_Dt,char) as chk_Dt
+								,a.power_bizp_nm as power_bizp_nm
+								,a.pss_cd as pss_cd
+								,a.pss_nm as pss_nm
+								,a.fcl_nm as fd_nm
+								,a.ins_plce_nm as ins_plce_nm
+						        ,b.cpu_use_qnt as cpu_use_rate
+								,FORMAT((b.ram_use_qnt/b.ram_tot_qnt) * 100,2) as ram_use_rate
+								,FORMAT((b.hdd_use_qnt/b.hdd_tot_qnt) * 100,2) as hdd_use_rate
+								,IFNULL(FORMAT((b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100,2),0) as hdd_use_rate2
+							    ,IFNULL(FORMAT((b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100,2),0) as hdd_use_rate3
+							    ,0 as vdo_file_yn
+								,b.ram_tot_qnt as ram_tot_qnt
+							    ,b.hdd_tot_qnt as hdd_tot_qnt
+				 		   		,case when cpu_use_qnt > #{thrs02} then '1'
+				 		         	  when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs02}  then '1'
+				 		         	  when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs02}  then '1'
+				 		         	  when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs02}  then '1'
+				 		         	  when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs02}  then '1'
+				 		          	  else '0'
+				 		          end  as check_yn
+				 		        ,'0' as cnn_sts_yn
+        						,0 as cnn_ss
+                				,a.fcl_cl_Cd as fcl_cl_Cd
+							FROM   facility_check_02 b
+								  ,facility a
+							WHERE a.id = b.id
+							 <if test="pssCd != '0000'.toString()">
+							  	and a.pss_cd = #{pssCd}
+							  </if>
+							  <if test="checkCd != '3'.toString()">
+							    and (case when cpu_use_qnt > #{thrs02} then '1'
+									 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs02} then '1'
+									 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs02} then '1'
+									 		          else '0'
+									 end ) = #{checkCd}
+				   			  </if>	
+				   			  <if test="startDate != ''.toString()">
+				    			  and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+				    		 </if>
+							)
+		union all
+		(	
+					SELECT	 b.id as id
+							,convert(b.chk_Dt,char) as chk_Dt
+							,a.power_bizp_nm as power_bizp_nm
+							,a.pss_cd as pss_cd
+							,a.pss_nm as pss_nm
+							,a.fcl_nm as fd_nm
+							,a.ins_plce_nm as ins_plce_nm
+					        ,0 as cpu_use_rate
+					        ,0 as ram_use_rate
+							,0 as hdd_use_rate
+							,0 as hdd_use_rate2
+							,0 as hdd_use_rate3
+							,b.vdo_file_yn as vdo_file_yn
+							,0 as ram_tot_qnt
+							,0 as hdd_tot_qnt
+							,b.cnn_sts_yn as check_yn
+							,b.cnn_sts_yn as cnn_sts_yn
+							,b.cnn_ss as cnn_ss
+                			,a.fcl_cl_Cd as fcl_cl_Cd							
+					  FROM   facility_check_03 b
+					   		,facility a
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+		)	
+				
+		union all
+		(	
+					SELECT	 b.id as id
+							,convert(b.chk_Dt,char) as chk_Dt
+							,a.power_bizp_nm as power_bizp_nm
+							,a.pss_cd as pss_cd
+							,a.pss_nm as pss_nm
+							,a.fcl_nm as fd_nm
+							,a.ins_plce_nm as ins_plce_nm
+					        ,0 as cpu_use_rate
+					        ,0 as ram_use_rate
+							,0 as hdd_use_rate
+							,0 as hdd_use_rate2
+							,0 as hdd_use_rate3
+							,0 as vdo_file_yn
+							,0 as ram_tot_qnt
+							,0 as hdd_tot_qnt
+							,b.cnn_sts_yn as check_yn
+							,b.cnn_sts_yn as cnn_sts_yn
+							,b.cnn_ss as cnn_ss
+							,a.fcl_cl_Cd as fcl_cl_Cd		
+					  FROM   facility_check_04 b
+					   		,facility a
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+		)					
+		union all
+		(	
+					SELECT	 b.id as id
+							,convert(b.chk_Dt,char) as chk_Dt
+							,a.power_bizp_nm as power_bizp_nm
+							,a.pss_cd as pss_cd
+							,a.pss_nm as pss_nm
+							,a.fcl_nm as fd_nm
+							,a.ins_plce_nm as ins_plce_nm
+					        ,0 as cpu_use_rate
+					        ,0 as ram_use_rate
+							,0 as hdd_use_rate
+							,0 as hdd_use_rate2
+							,0 as hdd_use_rate3
+							,0 as vdo_file_yn
+							,0 as ram_tot_qnt
+							,0 as hdd_tot_qnt
+							,b.cnn_sts_yn as check_yn
+							,b.cnn_sts_yn as cnn_sts_yn
+							,b.cnn_ss as cnn_ss
+							,a.fcl_cl_Cd as fcl_cl_Cd		
+					  FROM   facility_check_05 b
+					   		,facility a
+					  WHERE a.id = b.id
+					   <if test="pssCd != '0000'.toString()">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  <if test="checkCd != '3'.toString()">
+					    and b.cnn_sts_yn = #{checkCd}
+		   			  </if>	
+					  <if test="startDate != ''.toString()">
+		    			 and  date_format(b.chk_Dt, '%Y-%m-%d %H:%i')  between #{startDate} and #{endDate}
+		    		  </if>
+				)					
+			)T ,(select @rownum := 0)  as rowcolumn
+			  order by chk_Dt desc, check_yn DESC
+          )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  		  
+	</select>	
+	
+	
+	
+<!-- 입계치조회-->	
+	<select id="selectThrs" resultType="float">
+        
+        SELECT thrs_val from threshold
+		 WHERE fcl_Cl_Cd = #{flc_cd} 
+		   AND pss_Cd = 'D368'
+		   AND strt_dt = (SELECT MAX(strt_dt) FROM threshold WHERE fcl_Cl_Cd = #{flc_cd} 
+		   AND pss_Cd = 'D368' );
+		   
+    </select>
+    
+    
+    
+<!-- err 01 통합제어장치 전체건수 조회 -->
+	<select id="selectErrTotCntfacility01" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_01 b
+		   		,facility a
+		  WHERE a.id = b.id
+		  		and a.id = #{id}
+		     <if test="pssCd != null">
+				and a.pss_cd = #{pssCd}
+			 </if>
+		  ORDER BY b.chk_Dt DESC
+	</select>
+	
+<!-- err 01 통합제어장치 -->
+	<select id="selectErrFacility01"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cpu_use_qnt as cpu_use_rate
+				 		    ,FORMAT((b.ram_use_qnt/b.ram_tot_qnt) * 100,2) as ram_use_rate
+				 		    ,FORMAT((b.hdd_use_qnt/b.hdd_tot_qnt) * 100,2) as hdd_use_rate
+				 		    ,case when cpu_use_qnt > #{thrs} then '1'
+				 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+				 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs} then '1'
+				 		          else '0'
+				 		      end  as check_yn
+					  FROM   facility_check_01 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					  	and a.id = #{id}
+					   <if test="pssCd != null">
+					  	and a.pss_cd = #{pssCd}
+					   </if>
+					  ORDER BY b.chk_Dt DESC, check_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+	
+<!-- err 02 녹화장치 전체건수 조회 -->
+	<select id="selectErrTotCntfacility02" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_02 b
+		   		,facility a
+		  WHERE a.id = b.id
+		  	    and a.id = #{id}
+		     <if test="pssCd != null">
+				and a.pss_cd = #{pssCd}
+			 </if>
+		  ORDER BY b.chk_Dt DESC
+	</select>
+	
+<!-- err 02 녹화장치 -->
+	<select id="selectErrFacility02"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cpu_use_qnt as cpu_use_rate
+				 		    ,FORMAT((b.ram_use_qnt/b.ram_tot_qnt) * 100,2) as ram_use_rate
+				 		    ,FORMAT((b.hdd_use_qnt/b.hdd_tot_qnt) * 100,2) as hdd_use_rate
+				 		    ,IFNULL(FORMAT((b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100,2),0) as hdd_use_rate2
+				 		    ,IFNULL(FORMAT((b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100,2),0) as hdd_use_rate3
+				 		      ,case when cpu_use_qnt > #{thrs} then '1'
+				 		          when (b.ram_use_qnt/b.ram_tot_qnt) * 100 > #{thrs} then '1'
+				 		          when (b.hdd_use_qnt/b.hdd_tot_qnt) * 100 > #{thrs02}  then '1'
+				 		          when (b.hdd_use_qnt2/b.hdd_tot_qnt2) * 100 > #{thrs02}  then '1'
+				 		          when (b.hdd_use_qnt3/b.hdd_tot_qnt3) * 100 > #{thrs02}  then '1'
+				 		          else '0'
+				 		      end  as check_yn 
+				 		      
+					  FROM   facility_check_02 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					  	and a.id = #{id}
+					   <if test="pssCd != null">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  ORDER BY b.chk_Dt DESC, check_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+
+<!-- err 03 카메라 전체건수 조회 -->
+	<select id="selectErrTotCntfacility03" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_03 b
+		   		,facility a
+		  WHERE a.id = b.id
+		  	and a.id = #{id}
+		   <if test="pssCd != null">
+			 and a.pss_cd = #{pssCd}
+		   </if>
+		  ORDER BY b.chk_Dt DESC, B.cnn_sts_yn DESC
+	</select>
+	
+<!-- err 03 카메라 -->
+	<select id="selectErrFacility03"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cnn_ss as cnn_ss
+				 		    ,b.cnn_sts_yn as check_yn
+				 		    ,b.vdo_file_yn as vdo_file_yn
+					  FROM   facility_check_03 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					  	and a.id = #{id}
+					   <if test="pssCd != null">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  ORDER BY b.chk_Dt DESC, B.cnn_sts_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+	
+<!-- err 04 출입리더기 전체건수 조회 -->
+	<select id="selectErrTotCntfacility04" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_04 b
+		   		,facility a
+		  WHERE a.id = b.id
+		  	and a.id = #{id}
+		   <if test="pssCd != null">
+			 and a.pss_cd = #{pssCd}
+		   </if>
+		  ORDER BY b.chk_Dt DESC, B.cnn_sts_yn DESC
+	</select>
+	
+<!-- err 04 출입리더기 -->
+	<select id="selectErrFacility04"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cnn_ss as cnn_ss
+				 		    ,b.cnn_sts_yn as check_yn
+					  FROM   facility_check_04 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					  	and a.id = #{id}
+					   <if test="pssCd != null">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  ORDER BY b.chk_Dt DESC, B.cnn_sts_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+	
+<!-- err 05 경보주장치 전체건수 조회 -->
+	<select id="selectErrTotCntfacility05" resultType="int">
+		SELECT COUNT(*) 
+	  	  FROM   facility_check_05 b
+		   		,facility a
+		  WHERE a.id = b.id
+		  	and a.id = #{id}
+		   <if test="pssCd != null">
+			 and a.pss_cd = #{pssCd}
+		   </if>
+		  ORDER BY b.chk_Dt DESC, B.cnn_sts_yn DESC
+	</select>
+	
+<!-- err 05 경보주장치 -->
+	<select id="selectErrFacility05"
+		resultType="com.kepco.facility.domain.ListDto">
+		SELECT * 
+		FROM (
+				SELECT  @rownum := @rownum + 1 as RN, T.* FROM (
+					SELECT	 b.id as id
+				 			,convert(b.chk_Dt,char) as chk_Dt
+				 			,a.power_bizp_nm as power_bizp_nm
+				 			,a.pss_cd as pss_cd
+				 			,a.pss_nm as pss_nm
+				 			,a.fcl_nm as fd_nm
+				 			,a.ins_plce_nm as ins_plce_nm
+				 		    ,b.cnn_ss as cnn_ss
+				 		    ,b.cnn_sts_yn as check_yn
+					  FROM   facility_check_05 b
+					   		,facility a
+                            ,(select @rownum := 0)  as rowcolumn
+					  WHERE a.id = b.id
+					  	and a.id = #{id}
+					   <if test="pssCd != null">
+					  	and a.pss_cd = #{pssCd}
+					  </if>
+					  ORDER BY b.chk_Dt DESC, B.cnn_sts_yn DESC
+				)T
+            )TT
+		WHERE TT.RN BETWEEN #{start} AND #{end}  
+					  
+	</select>	
+</mapper>

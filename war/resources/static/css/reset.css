@@ -1,0 +1,44 @@
+@charset "utf-8";/*****************************************************************
+* filename : reset.css
+* description : 브라우저 초기화 셋팅
+* date : 2021-07
+*****************************************************************/
+
+/*****************************************************************
+Reset
+*****************************************************************/
+html, body, div, span, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, blockquote, p, address, pre, cite, form, fieldset, input, textarea, select, table, th, td, section, header, article, nav, aside, footer { margin: 0; padding: 0; } 
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, nav, menu, nav, section, summary { display: block; } 
+* { margin: 0; padding: 0; box-sizing: border-box; word-break: keep-all; } 
+*, ::after, ::before { box-sizing: border-box } 
+
+/* img */
+img { border: 0; vertical-align: top; } 
+
+/* list */
+ol, ul, dl { list-style: none } 
+
+/* inputbox 묶음처리 */
+fieldset { margin: 0; padding: 0; border: 0; } 
+legend { position: absolute; width: 0; height: 0; overflow: hidden; visibility: hidden; } 
+
+/* 표캡션 */
+caption { position: absolute; width: 0; height: 0; overflow: hidden; font: 0/0 Sans-serif; visibility: hidden; } 
+table, th, td { border-collapse: collapse; } 
+
+/* a tag */
+a { color:inherit; text-decoration: none; } 
+a:link { color:inherit; text-decoration: none; } 
+a:active { color:inherit; text-decoration: none; } 
+a:visited { color:inherit; text-decoration: none; } 
+a:hover { color:inherit; text-decoration: none; } 
+
+
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] { cursor: pointer; -webkit-appearance: button; } 
+
+button[disabled],
+html input[disabled] { cursor: default; } 
+

@@ -1,0 +1,48 @@
+@charset "UTF-8";
+
+@media screen and (max-width:600px){
+.form-wrap {width: 410px;} .input-group {width: 120px;} #login { left: 55px;} .submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;} .input-group {width: 100%;}
+}
+@media screen and (max-width:540px){
+.form-wrap {height: 600px; width: 410px; top: 30px;}
+.input-group {width: 120px;}
+#login { left: 55px;}
+.submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;}
+.input-group {width: 100%;}
+}
+@media screen and (max-width:415px){
+.form-wrap {width: 390px; top:30px;}
+.input-group {width: 120px;}
+#login { left: 55px;}
+.submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;}
+/*.input-group {width: 75%;}*/
+.input-group {width: 100%;}
+}
+@media screen and (max-width:400px){
+.form-wrap {height: 570px; width: 330px; top:1px;}
+.input-group {width: 120px;}
+#login { left: 55px;}
+.submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;}
+.input-group {width: 100%;}
+}
+@media screen and (max-width:375px){
+	.form-wrap {height: 570px; width: 330px; top:30px;}
+	.input-group {width: 120px;}
+	#login { left: 45px;}
+	.submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;}
+    .input-group {width: 100%;}
+}
+@media screen and (max-width:360px){
+.form-wrap {height: 570px; width: 330px; top:20px;}
+.input-group {width: 120px;}
+#login { left: 45px;}
+.submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;}
+.input-group {width: 75%;}
+}
+@media screen and (max-width:330px){
+.form-wrap {height: 520px; width: 300px; top:1px;}
+.input-group {width: 120px;}
+#login { left: 40px;}
+.submit { width: 85%;   padding: 10px 30px;   cursor: pointer;   display: block;   margin: auto;border: 0;border-radius: 30px;}
+.input-group {width: 75%;}
+}

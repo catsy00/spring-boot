@@ -1,0 +1,111 @@
+/*****************************************************************
+* filename : mem_contents.css
+* description : 맴버십
+* date : 2022-01
+*****************************************************************/
+
+/*****************************************************************
+login
+*****************************************************************/
+.loginWap { display:table; width:100%; height: calc(100% - 60px); min-width:600px; min-height:560px; }
+.loginWap .loginIn { display: table-cell; vertical-align: middle; text-align:center;}
+.loginWap .loginIn .loginCon { width:591px; height:362px; margin:0 auto; padding:45px; background-image: url(../images/mem/login_bg.png); background-repeat:no-repeat; background-position:0 0; box-sizing: border-box; box-shadow: 0 3px 3px #d0e6f5;}
+.loginWap .loginIn .loginCon h2 { width:314px; height:72px; background-image: url(../images/mem/login_tit.png); background-repeat:no-repeat; background-position:center center; text-indent:-999999px;}
+
+.loginWap .loginIn .loginCon .inputBox { width:314px; height: 46px; margin:15px 0 0 0;  border:1px solid #e4e4e4; border-radius: 3px; background-color:#ffffff;}
+.loginWap .loginIn .loginCon .inputBox:after { content:''; display:inline-block; clear:both;}
+.loginWap .loginIn .loginCon .inputBox label { float:left; width:15%; height:45px; padding:0 0 0 5%; line-height:46px; font-size:15px; font-weight:400; box-sizing:border-box; position:relative; text-indent:-999999px;}
+.loginWap .loginIn .loginCon .inputBox label:after { content:''; display:block; position:absolute; top:0; right:0; width:1px; height:100%; background-color:#e4e4e4;  }
+.loginWap .loginIn .loginCon .inputBox input { float:left; width:85%; padding:0 5%; height:44px; line-height:44px; border:none; border-radius: 3px; box-sizing:border-box; }
+.loginWap .loginIn .loginCon .inputBox .ico_id {background-image: url(../images/mem/ico_id.png); background-repeat:no-repeat; background-position:center center;}
+.loginWap .loginIn .loginCon .inputBox .ico_pw {background-image: url(../images/mem/ico_pw.png); background-repeat:no-repeat; background-position:center center;}
+.loginWap .loginIn .loginCon .btn_login { float:left; width:314px; height:46px; line-height:46px; margin:15px 0 0 0; font-size:15px; font-weight:400; border:1px solid #0d69c7; border-radius:5px; background-color:#0d69c7; color:#ffffff; }
+.loginWap .loginIn .loginCon .btn_login:hover { border:1px solid #3b9bfc; background-color: #3b9bfc; }
+.loginWap .loginIn .loginCon .inputBox .signup-errors {
+	color : red;
+	margin : 10px;
+}
+
+.loginWap .loginIn .joinCon { width:591px; height:160px; margin:24px auto 0; padding:40px 45px 45px 296px; background-color:#ffffff; background-image: url(../images/mem/login_join_bg.gif); background-repeat:no-repeat; background-position:75px 24px; border:1px solid #e4e4e4; border-radius: 5px; box-sizing: border-box; box-shadow: 0 3px 3px #d0e6f5;}
+.loginWap .loginIn .joinCon span { display:block; font-size:14px; text-align:center; color:#888888;}
+.loginWap .loginIn .joinCon > .btn_join{ display:block; width:100%; height:46px; line-height:46px; margin:15px 0 0 0; font-size:15px; font-weight:400; border:1px solid #238bf5; border-radius:5px; background-color:#238bf5; color:#ffffff; }
+.loginWap .loginIn .joinCon > .btn_join:hover { background-color:#ffffff; color:#238bf5; }
+
+/*****************************************************************
+join
+*****************************************************************/
+.joinWap { display:table; width:100%; height: calc(100% - 60px); min-width:910px; min-height:560px; }
+.joinWap .joinIn { display: table-cell; vertical-align: middle; text-align:center;}
+.joinWap .joinIn .joinCon{ width:910px; min-height:400px; margin:40px auto; padding:40px 100px; background-color:#ffffff; background-image: url(../images/mem/join_tit_bg.png); background-repeat:no-repeat; background-position:right 0; border:1px solid #e4e4e4; border-radius: 5px; box-sizing: border-box; box-shadow: 0 3px 3px #d0e6f5; }
+.joinWap .joinIn .joinCon .joinTit { height:140px; }
+.joinWap .joinIn .joinCon .joinTit:after { content:''; display: block; clear: both;}
+.joinWap .joinIn .joinCon .joinTit h1 { float:left; margin:0 0 0 260px;}
+.joinWap .joinIn .joinCon .joinTit h1 i{ display: block; width:136px; height:25px; margin:0 0 5px 0; background-image: url(../images/mem/join_logo.png); background-repeat:no-repeat; background-position:right 0;}
+.joinWap .joinIn .joinCon .joinTit h1 span { display: block; font-size:20px; font-weight: 400; color:#ffffff; line-height: 1.1;}
+.joinWap .joinIn .joinCon .joinTit h2 { float:left; margin:0 0 0 20px; font-size:65px; font-weight: 500;  color:#ffffff; line-height: 1.0; letter-spacing: -2px;}
+
+.joinWap .joinIn .joinCon .txt_join { font-size:14px; color:#888888; text-align: right; }
+.joinWap .joinIn .joinCon .idInputBox  { width:100%; height: 46px; margin:20px 0 0 0;   background-color:#ffffff;}
+.joinWap .joinIn .joinCon .idInputBox:after { content:''; display:inline-block; clear:both;}
+.joinWap .joinIn .joinCon .idInputBox  label { float:left; width:27%; height:46px; padding:0 0 0 7%; line-height:46px; font-size:15px; font-weight:400; color:#333333; text-align:left; border-top:1px solid #e4e4e4; border-bottom:1px solid #e4e4e4; border-left:1px solid #e4e4e4; border-radius: 3px 0 0 3px; box-sizing:border-box; position:relative;}
+.joinWap .joinIn .joinCon .idInputBox  label:after { content:''; display:block; position:absolute; top:0; right:0; width:1px; height:100%; background-color:#e4e4e4;  }
+.joinWap .joinIn .joinCon .idInputBox  input { float:left; width:51%; padding:0 5%; height:46px; line-height:46px; border-top:1px solid #e4e4e4; border-bottom:1px solid #e4e4e4; border-right:1px solid #e4e4e4; border-left:none; border-radius: 0 3px 3px 0; box-sizing:border-box; }
+.joinWap .joinIn .joinCon .idInputBox  .btn_id_check { float:right; width:140px; height: 46px; font-size:15px; color:#ffffff; text-align:center; background-color:#238bf5; border:1px solid #238bf5; border-radius: 3px;}
+.joinWap .joinIn .joinCon .idInputBox  .btn_id_check:hover { color:#238bf5; background-color:#ffffff; }
+
+.joinWap .joinIn .joinCon .inputBox  { width:100%; height: 46px; margin:20px 0 0 0;  border:1px solid #e4e4e4; border-radius: 3px; background-color:#ffffff;}
+.joinWap .joinIn .joinCon .inputBox :after { content:''; display:inline-block; clear:both;}
+.joinWap .joinIn .joinCon .inputBox  label { float:left; width:27%; height:45px; padding:0 0 0 7%; line-height:46px; font-size:15px; font-weight:400; color:#333333; text-align:left; box-sizing:border-box; position:relative;}
+.joinWap .joinIn .joinCon .inputBox  label:after { content:''; display:block; position:absolute; top:0; right:0; width:1px; height:100%; background-color:#e4e4e4;  }
+.joinWap .joinIn .joinCon .inputBox  input { float:left; width:73%; padding:0 5%; height:44px; line-height:44px; border:none; border-radius: 3px; box-sizing:border-box; }
+.joinWap .joinIn .joinCon .inputBox .signup-errors {
+	text-align:left;
+	color : red;
+	margin : 5px;
+}
+
+.joinWap .joinIn .joinCon .stitBox { margin:0 0 0 0; }
+.joinWap .joinIn .joinCon .stitBox:after { content:''; display:inline-block; clear:both;}
+.joinWap .joinIn .joinCon .stitBox h3 { float:left; width:80%; font-size:16px; color:#333333; font-weight: 400; text-align:center;}
+.joinWap .joinIn .joinCon .stitBox h4 { float:left; width:100%; font-size:16px; color:#333333; font-weight: 400; text-align:center;}
+.joinWap .joinIn .joinCon .stitBox span { float:right; font-size:14px; color:#888888;}
+.joinWap .joinIn .joinCon .sconBox { margin:20px 0 0 0; border:1px solid #e4e4e4; border-radius:3px;}
+.joinWap .joinIn .joinCon .sconBox > .top {padding:20px 0; text-align: center; }
+.joinWap .joinIn .joinCon .sconBox > .top span { line-height: 36px;}
+.joinWap .joinIn .joinCon .sconBox > .bottom { border-top:1px solid #e4e4e4; padding:0 0 20px 0; overflow: hidden;}
+.joinWap .joinIn .joinCon .sconBox > .bottom ul {width:90%; margin:0 auto; }
+.joinWap .joinIn .joinCon .sconBox > .bottom ul:after { content:''; display:inline-block; clear:both;}
+.joinWap .joinIn .joinCon .sconBox > .bottom ul li { float: left; width:25%; margin:20px 0 0 0; text-align: left; }
+.joinWap .joinIn .joinCon .btn_join { display:block; width:250px; height:46px; line-height:46px; margin:30px auto 0; font-size:15px; font-weight:400; border:1px solid #238bf5; border-radius:5px; background-color:#238bf5; color:#ffffff; }
+.joinWap .joinIn .joinCon .btn_join:hover { background-color:#ffffff; color:#238bf5; }
+
+/*****************************************************************
+join_fihish
+*****************************************************************/
+.joinWap .joinIn .joinFi { width:910px; min-height:400px; margin:40px auto; padding: 0 0 70px 0; background-color:#ffffff; border:1px solid #e4e4e4; border-radius: 5px; box-sizing: border-box; box-shadow: 0 3px 3px #d0e6f5; overflow: hidden;}
+.joinWap .joinIn .joinFi .joinFiTit:after { content:''; display: block; clear: both;}
+.joinWap .joinIn .joinFi .joinFiTit h1 { padding:30px 0; text-align: center; background-color:#238bf5;}
+.joinWap .joinIn .joinFi .joinFiTit h1 i{ display:inline-block; width:136px; height: 30px; background-image: url(../images/mem/join_logo.png); background-repeat:no-repeat; background-position:right 7px;}
+.joinWap .joinIn .joinFi .joinFiTit h1 span { display:inline-block; margin:0 0 0 10px; font-size:25px; font-weight: 400; color:#ffffff; line-height: 30px; letter-spacing: -2px;}
+.joinWap .joinIn .joinFi .joinFiTit .joinFiTextBox { width:70%; margin:70px auto; background-image: url(../images/mem/joinfi_bg.gif); background-repeat:no-repeat; background-position:0 10px;}
+.joinWap .joinIn .joinFi .joinFiTit h2 { margin:0 0 40px 30%; font-size:40px; font-weight: 500; text-align: center; color:#222222; line-height: 1.0; letter-spacing: -2px;}
+.joinWap .joinIn .joinFi .joinFiTit h2 span { color:#238bf5;}
+.joinWap .joinIn .joinFi .joinFiTit .infoText { margin:0 0 0 30%; padding:30px 0; font-size:15px; text-align: center; border-top:1px solid #e4e4e4; border-bottom:1px solid #e4e4e4; }
+.joinWap .joinIn .joinFi .btn_loginGo { display:block; width:250px; height:46px; line-height:46px; margin:30px auto 0; font-size:15px; font-weight:400; border:1px solid #238bf5; border-radius:5px; background-color:#238bf5; color:#ffffff; }
+.joinWap .joinIn .joinFi .btn_loginGo:hover { background-color:#ffffff; color:#238bf5; }
+
+
+
+/*****************************************************************
+error
+*****************************************************************/
+
+#error_wrap { display:table; width:100%; height: calc(100% - 60px); }
+#error_wrap .errorIn { display: table-cell; vertical-align: middle; text-align:center;}
+#error_wrap .errorIn .errorTit { font-family: 'GmarketSans'; font-size:80px; letter-spacing:15px; text-align:center; }
+#error_wrap .errorIn .errorTit .error0 { display:inline-block; width:80px; height:130px; background-image: url(../images/mem/error0.png); background-repeat:no-repeat; background-position:0 20px; text-indent: -999999px; }
+#error_wrap .errorIn .errorTxt { margin:30px 0 0 0; text-align:center; }
+#error_wrap .errorIn .btnPrePage { display:block; width:250px; margin:30px auto 0; padding:0 20px;  line-height:45px; color:#ffffff; background-color:#117df6; border:1px solid #117df6; border-radius:5px; box-sizing:border-box; position:relative;}
+#error_wrap .errorIn .btnPrePage:hover { color:#117df6; background-color:#eaf6fe; }
+#error_wrap .errorIn .btnPrePage span { font-size:13px; }
+#error_wrap .errorIn .btnPrePage .ti-angle-right { position:absolute; top:17px; right:20px;}
