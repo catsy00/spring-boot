@@ -179,14 +179,5 @@ public class BookControllerRestTemplateTest {
         verify(mockRepository, times(1)).deleteById(1L);
     }
 
-    private static void printJSON(Object object) {
-        String result;
-        try {
-            result = om.writerWithDefaultPrettyPrinter().writeValueAsString(object);
-            System.out.println(result);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
 
 }
